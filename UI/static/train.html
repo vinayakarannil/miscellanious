@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Image Recognition API</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+
+</head>
+
+<body style="background: white;>
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <h1 class="text-center" style="color:black;">Transfer Learning Service&nbsp;<a class="navbar-brand" href="">
+                             <img src="/images/logo.svg" style="height:40px;" ></a>
+	    </h1>
+	    
+        </div>
+    </div>
+    <div><br></br><br></br>
+    </div>
+    <div><center><font size="4">
+    <p>Read the <a href="/documentation.html">documentation</a> on how to use the training service</p></font></center>
+    </div>	
+
+
+
+    
+    <div id="main" class="container">
+        <table class="table" style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+">
+             <tr style="background: lightgrey;"><td><b>Upload training data</b></td><td><b>Status</b></td><td><b>Accuracy</b></td></tr>
+            <tr><td><form method=post enctype=multipart/form-data>
+                        <!--<input data-bind="value: title" type="text" id="inputTask" placeholder="Path to the image" style="width: 150px;">-->
+			<input type="file" name="file" required />
+			<input type=submit value=Upload onclick="fun()"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td><span id="trainingStatus" style="display:none;">In progress</span></td><td><span id="trainingAccuracy" style="display:none;"></span></td>
+        </form></tr>
+            <!--<tr><td><b>Predicted Result</b></td><td><b></b></td></tr>
+            <tr>
+                
+                <td><span id="predictedResult"></span>	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button id="clear" style="display:none;" onclick="myFunction()">Clear</button></td>
+                
+            </tr>-->
+        </table>
+        
+        
+    </div>
+    
+   
+  
+    
+    </div><div>
+    <center>
+<a href="model.zip" download="model.zip"><button id="but1" type="submit" style="display:none;">Download Model</button></a>
+
+<button id="test" type="submit" style="display:none;" onclick="testFunc()">Test the model</button>
+<button id="hidetest" type="submit" style="display:none;" onclick="hidetestFunc()">Hide testing</button>
+<img id="load" src="/images/ajax-loader.gif" style="height:100px;weight:100px;display:none;" >
+</center></div><br></br><br></br>
+	
+<div id="main2" class="container" style="display:none;" ><center><font size="6">
+    <p><b>Test your model here </p></b></font></center>
+        <table class="table" style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+">
+             <tr style="background: lightgrey;"><td><b>Chose your file to upload and predict</b></td><td><b></b></td></tr>
+            <tr><td><form method=post enctype=multipart/form-data>
+                        <!--<input data-bind="value: title" type="text" id="inputTask" placeholder="Path to the image" style="width: 150px;">-->
+			<input type="file" name="file" required />
+			<input type=submit value=Upload onclick="fun1()">
+        </form></td><td><b></b></td></tr>
+            <tr id="row1" style="display:none;background: lightgrey;"><td><b>Predicted Result</b></td><td><b>Score</b></td></tr>
+            <tr id="row2" style="display:none;">
+                
+                <td><b><span id="predictedResult"></span></b></td><td><b><span id="predictedScore"></span></b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button id="clear" style="display:none;" onclick="myFunction()">Clear</button></td>
+                
+            </tr>
+        </table>
+        
+        
+    </div>
+
+    <script type="text/javascript">
+        function testFunc(){
+		$('#main2').show();
+                $('#test').hide();
+		$('#hidetest').show();
+		}
+        function hidetestFunc(){
+		$('#main2').hide();
+                $('#test').show();
+		$('#hidetest').hide();
+		}
+	function hideFunc(){
+		$('#main2').hide();
+		}
+
+	function myFunction(){
+
+	document.getElementById("predictedResult").innerHTML= "";
+	$('#clear').hide();
+	$('#row1').hide();
+	$('#row2').hide();
+	}
+       
+
+   //form Submit action
+		function fun(){
+		$('#trainingStatus').show();
+		$('#load').show();
+                
+   		$("form").submit(function(evt){	 
+		//$('#loader-icon').show();     		 
+		evt.preventDefault();
+                //$('#loader-icon').show();
+     		var formData = new FormData($(this)[0]);
+		
+   		$.ajax({
+      		 url: 'dataUpload',
+       		type: 'POST',
+      		 data: formData,
+      		 
+      		 cache: false,
+      		 contentType: false,
+      		 enctype: 'multipart/form-data',
+      		 processData: false,
+		 
+      		 success: function (response) {
+		  $('#load').hide();
+		  $('#trainingStatus').show();
+                  $('#trainingAccuracy').show();
+		  $('#test').show();
+                  
+        	  document.getElementById("trainingStatus").innerHTML= response.status; 
+                  document.getElementById("trainingAccuracy").innerHTML= response.accuracy; 
+ 		  $('#but1').show();
+                  $('#but2').show();
+                  //$('#main1').show();
+                  //$('#main2').show();
+      		 }
+   		});
+   return false;
+  })};
+  
+  
+
+		//$('#load').show();
+    	        $("form").submit(function(evt){	 
+		//$('#loader-icon').show();     		 
+		evt.preventDefault();
+                //$('#loader-icon').show();
+     		var formData = new FormData($(this)[0]);
+		
+   		$.ajax({
+      		 url: 'fileUploadtest',
+       		type: 'POST',
+      		 data: formData,
+      		 async: false,
+      		 cache: false,
+      		 contentType: false,
+      		 enctype: 'multipart/form-data',
+      		 processData: false,
+		 
+      		 success: function (response) {
+	          //$('#load').hide();
+      		  $('#row1').show();
+		   $('#row2').show();
+		  $('#clear').show();
+
+        	  document.getElementById("predictedResult").innerHTML= response.label; 
+                  document.getElementById("predictedScore").innerHTML= response.score; 
+      		 }
+   		});
+   return false;
+ }); 
+
+    </script>
+</body>
+</html>

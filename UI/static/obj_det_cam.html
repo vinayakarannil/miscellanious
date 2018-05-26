@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Image Recognition API</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+<style>
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin: auto;
+    width: 200px;
+    height:240px
+    
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.container1 {
+    padding: 2px 16px;
+}
+
+ .zoomin img { height: 500px; width: 500px; 
+	-webkit-transition: all 2s ease; 
+	-moz-transition: all 2s ease; 
+	-ms-transition: all 2s ease; 
+	transition: all 2s ease; 
+	} 
+ .zoomin img:hover { width: 600px; height: 600px; }
+ .image:hover img {
+    -webkit-transform:scale(1.5); /* Safari and Chrome */
+    -moz-transform:scale(1.5); /* Firefox */
+    -ms-transform:scale(1.5); /* IE 9 */
+    -o-transform:scale(1.5); /* Opera */
+     transform:scale(1.5);
+}
+</style>
+
+</head>
+
+<body style="background: white;>
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <h1 class="text-center" style="color:black;">Object Detection & Recognition Demo&nbsp;&nbsp;&nbsp;<a class="navbar-brand" href="">
+                             <img src="/images/logo.svg" style="height:40px;" ></a>
+	    </h1>
+	    
+        </div>
+    </div>
+    <!--<center><a href=""><button id="clear" style="display:none;">Clear</button></a></center>-->
+
+    <center>
+    <img id="load" src="/images/ajax-loader.gif" style="height:100px;weight:100px;display:none;" >
+    
+    </center>
+    <br></br>	
+    <div id="main1" class="container">
+       
+            
+          
+    <center> <table><tr><td><br><table style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+"><tr style="background: lightgrey;"><td>&emsp;&emsp;&emsp;&emsp;Upload Image</td></tr><tr><td><input type="image" src="/images/upload_img.jpg" name="saveForm"  style="height:200px;width:200px;" onclick="showfile()" /> </td></tr></table></td><td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+</td><td>  
+        
+    
+            
+          
+     <br><table style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+"><tr style="background: lightgrey;"><td>&emsp;&emsp;&emsp;&emsp;Live Demo</td></tr><tr><td><input type="image" src="/images/webcam.png" name="saveForm"  style="height:200px;width:200px;" onclick="fun()" /> </td></tr></table> </td><td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+</td><td><br><table style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+"><tr style="background: lightgrey;"><td>&emsp;&emsp;&emsp;&emsp;Face Recognition</td></tr><tr><td><input type="image" src="/images/face_recog.png" name="saveForm"  style="height:200px;width:200px;" onclick="fun2()" /> </td></tr></table></td></tr></table>
+     </center>   
+    </div>
+    <!--<div class="zoomin" id="result" style="display:none;"><center><table><tr><td><img id="img1" src="" style="height:400px;width:400px;"></td><td><img class="zoomin" id="img2" src="" style="height:400px;width:400px;"></td></tr></table></div>-->
+    <br><br>
+    <div id="main" class="container">
+        <table class="table" style="background: white;border: 1px solid beige;box-shadow: 3px 5px 15px 0px rgba(0, 0, 0, 0.2), 3px 5px 15px 0 rgba(0, 0, 0, 0.19);
+">
+             <tr id="row1" style="background: lightgrey;display:none;"><td><b>Chose your file to upload</b></td><td><b></b></td></tr>
+            <tr id="row2" style="display:none;" ><td><form method=post enctype=multipart/form-data>
+                        <!--<input data-bind="value: title" type="text" id="inputTask" placeholder="Path to the image" style="width: 150px;">-->
+			<input type="file" name="file" required />
+			<input type=submit value=Upload onclick="fun1()">
+        </form></td><td><b></b></td></tr>
+            
+            
+        </table>
+        
+        
+    </div>
+    
+    <div  id="result" style="display:none;"><center><table><tr style="background: lightgrey;"><td ><center>OBJECTS</center></td></tr><tr><td><span id="predictedobjects"></span></td></tr></table><br><br><table><tr><td style="background: lightgrey;"><center>Uploaded Image</center></td><td></td><td style="background: lightgrey;"><center>Detected Objects</center></td></tr><tr><td><img id="img1" src="" style="height:400px;width:400px;"></td><td></td><td  class="image"><img  id="img2" src="" style="height:400px;width:400px;"></td></tr></table><center><br></br>
+<a href="">
+<button id="clear" style="display:none;">Clear</button></a></center></div>
+    <center>
+    <img id="load" src="/images/ajax-loader.gif" style="height:100px;weight:100px;display:none;" >
+    
+    </center>
+    
+    
+   
+  
+   
+    <script type="text/javascript">
+	
+              function showfile(){
+                      $('#row1').show();
+		  $('#row2').show();}
+
+   //form Submit action
+              function fun(){
+
+		//$('#load').show();
+   		//$("form").submit(function(evt){	 
+		//$('#loader-icon').show();     		 
+		//evt.preventDefault();
+                //$('#loader-icon').show();
+     		//v/ar formData = new FormData($(this)[0]);
+		
+   		$.ajax({
+      		 url: 'objectDetectLive',
+       		//type: 'POST',
+      		 //data: formData,
+    
+      		 //cache: false,
+      		 //contentType: false,
+      		 //enctype: 'multipart/form-data',
+      		 //processData: false,
+		 
+      		 //success: function (response) {
+                  
+		  /*$('#load').hide();
+                  $('#result').show();
+                  $('#img0').show();
+      		  $('#row1').hide();
+		  $('#row2').hide();
+		  $('#clear').show();
+                  
+                  document.getElementById("img1").src = response.image0;
+                  document.getElementById("img2").src = response.image1;
+                  //document.getElementById("result").innerHTML= response.label;
+        	  //document.getElementById("predictedResult").innerHTML= response.label;
+                  //document.getElementById("predictedScore").innerHTML= response.score; 
+                  
+ 
+      		 }
+   		});
+   return false;*/
+})};
+     function myFunction(){
+
+	document.getElementById("predictedResult").innerHTML= "";
+	$('#clear').hide();
+	$('#row1').show();
+	$('#row2').show();
+        $('#img0').hide();
+        $('#div').show();
+	}
+       
+
+   //form Submit action
+              function fun1(){
+
+		$('#load').show();
+   		$("form").submit(function(evt){	 
+		//$('#loader-icon').show();     		 
+		evt.preventDefault();
+                //$('#loader-icon').show();
+     		var formData = new FormData($(this)[0]);
+		
+   		$.ajax({
+      		 url: 'objectDetectImage',
+       		type: 'POST',
+      		 data: formData,
+    
+      		 cache: false,
+      		 contentType: false,
+      		 enctype: 'multipart/form-data',
+      		 processData: false,
+		 
+      		 success: function (response) {
+                  
+		  $('#load').hide();
+                  $('#result').show();
+                  $('#img0').show();
+      		  $('#row1').hide();
+		  $('#row2').hide();
+                  $('#main1').hide();
+		  $('#clear').show();
+                  
+                  document.getElementById("img1").src = response.image0;
+                  document.getElementById("img2").src = response.image1;
+                  document.getElementById("predictedobjects").innerHTML = response.objects;
+                  //document.getElementById("result").innerHTML= response.label;
+        	  //document.getElementById("predictedResult").innerHTML= response.label;
+                  //document.getElementById("predictedScore").innerHTML= response.score; 
+                  
+ 
+      		 }
+   		});
+   return false;
+})};
+                 function fun2(){    
+       			$.ajax({
+      		 url: 'facerecognitionLive',
+})};
+      /*
+        function LoginViewModel() {
+            var self = this;
+            self.username = ko.observable();
+            self.password = ko.observable();
+ 	    
+            self.login = function() {
+                $('#login').modal('hide');
+                
+                tasksViewModel.login(self.username(), self.password());
+            }
+        }
+        
+        var tasksViewModel = new TasksViewModel();
+        
+       
+        var loginViewModel = new LoginViewModel();
+        ko.applyBindings(tasksViewModel, $('#main')[0]);
+       
+       
+        ko.applyBindings(loginViewModel, $('#login')[0]);*/
+    </script>
+</body>
+</html>
